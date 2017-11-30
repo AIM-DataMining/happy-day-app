@@ -1,0 +1,47 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="de.data_mining.hs_esslingen.happyday">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+    <activity
+        android:name="de.data_mining.hs_esslingen.happyday.PreviewActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/ThemeFullscreen" />
+
+    <activity
+        android:name="de.data_mining.hs_esslingen.happyday.CameraFragmentMainActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/ThemeFullscreen" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="de.data_mining.hs_esslingen.happyday"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
+
+</application>
+
+</manifest>
