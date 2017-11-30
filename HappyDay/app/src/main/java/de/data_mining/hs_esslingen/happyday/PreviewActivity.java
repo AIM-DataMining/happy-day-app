@@ -80,8 +80,6 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
     private ImageView imagePreview;
     private ViewGroup buttonPanel;
     private AspectFrameLayout videoPreviewContainer;
-    private View cropMediaAction;
-    private TextView ratioChanger;
 
     private MediaController mediaController;
     private MediaPlayer mediaPlayer;
@@ -145,33 +143,16 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         photoPreviewContainer = (FrameLayout) findViewById(R.id.photo_preview_container);
         buttonPanel = (ViewGroup) findViewById(R.id.preview_control_panel);
         View confirmMediaResult = findViewById(R.id.confirm_media_result);
-        View reTakeMedia = findViewById(R.id.re_take_media);
         View cancelMediaAction = findViewById(R.id.cancel_media_action);
-        cropMediaAction = findViewById(R.id.crop_image);
-        ratioChanger = (TextView) findViewById(R.id.ratio_image);
-        ratioChanger.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentRatioIndex = (currentRatioIndex + 1) % ratios.length;
-                ratioChanger.setText(ratioLabels[currentRatioIndex]);
-            }
-        });
+        View evalImageAction = findViewById(R.id.eval_image);
 
-        cropMediaAction.setVisibility(View.GONE);
-        ratioChanger.setVisibility(View.GONE);
+        evalImageAction.setVisibility(View.VISIBLE);
 
-        if (cropMediaAction != null)
-            cropMediaAction.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                }
-            });
+        if (evalImageAction != null)
+            evalImageAction.setOnClickListener(this);
 
         if (confirmMediaResult != null)
             confirmMediaResult.setOnClickListener(this);
-
-        if (reTakeMedia != null)
-            reTakeMedia.setOnClickListener(this);
 
         if (cancelMediaAction != null)
             cancelMediaAction.setOnClickListener(this);
@@ -225,7 +206,6 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         videoPreviewContainer.setVisibility(View.GONE);
         surfaceView.setVisibility(View.GONE);
         showImagePreview();
-        ratioChanger.setText(ratioLabels[currentRatioIndex]);
     }
 
     private void showImagePreview() {
@@ -238,8 +218,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void displayVideo(Bundle savedInstanceState) {
-        cropMediaAction.setVisibility(View.GONE);
-        ratioChanger.setVisibility(View.GONE);
+
         if (savedInstanceState != null) {
             loadVideoParams(savedInstanceState);
         }
@@ -380,9 +359,10 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         Intent resultIntent = new Intent();
         if (view.getId() == R.id.confirm_media_result) {
-            sendImageToServer();
+            sendImageToServer("train", "sad");
             resultIntent.putExtra(RESPONSE_CODE_ARG, ACTION_CONFIRM).putExtra(FILE_PATH_ARG, previewFilePath);
-        } else if (view.getId() == R.id.re_take_media) {
+        } else if (view.getId() == R.id.eval_image) {
+            sendImageToServer("test", "");
             deleteMediaFile();
             resultIntent.putExtra(RESPONSE_CODE_ARG, ACTION_RETAKE);
         } else if (view.getId() == R.id.cancel_media_action) {
@@ -460,7 +440,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
         int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
         bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = 1;
+        bmOptions.inSampleSize = scaleFactor;
         Bitmap bitmap = BitmapFactory.decodeStream(ctx.getContentResolver()
                 .openInputStream(uri), null, bmOptions);
         Matrix matrix = new Matrix();
@@ -475,9 +455,9 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         return 0;
     }
 
-    private void sendImageToServer() {
+    private void sendImageToServer(String emoji, String mode) {
 
-        String url = "http://martin-linux:5000/upload";
+        String url = "http://martin-linux:5000/" + "/" + emoji;
 
         VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, url, new Response.Listener<NetworkResponse>() {
             @Override
