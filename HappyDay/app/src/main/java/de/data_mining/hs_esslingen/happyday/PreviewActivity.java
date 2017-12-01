@@ -1,6 +1,8 @@
 package de.data_mining.hs_esslingen.happyday;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,6 +27,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -94,6 +97,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
     private FaceDetector detector;
     Bitmap editedBitmap;
     private Uri imageUri;
+    private AlertDialog labelsDialog;
 
     public static Intent newIntentPhoto(Context context, String filePath) {
         return new Intent(context, de.data_mining.hs_esslingen.happyday.PreviewActivity.class)
@@ -359,18 +363,19 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         Intent resultIntent = new Intent();
         if (view.getId() == R.id.confirm_media_result) {
-            sendImageToServer("train", "sad");
-            resultIntent.putExtra(RESPONSE_CODE_ARG, ACTION_CONFIRM).putExtra(FILE_PATH_ARG, previewFilePath);
+            openLabelDialog();
         } else if (view.getId() == R.id.eval_image) {
             sendImageToServer("test", "");
             deleteMediaFile();
             resultIntent.putExtra(RESPONSE_CODE_ARG, ACTION_RETAKE);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         } else if (view.getId() == R.id.cancel_media_action) {
             deleteMediaFile();
             resultIntent.putExtra(RESPONSE_CODE_ARG, ACTION_CANCEL);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         }
-        setResult(RESULT_OK, resultIntent);
-        finish();
     }
 
     @Override
@@ -455,9 +460,9 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         return 0;
     }
 
-    private void sendImageToServer(String emoji, String mode) {
+    private void sendImageToServer(String mode, String emoji) {
 
-        String url = "http://martin-linux:5000/" + "/" + emoji;
+        String url = "http://martin-linux:5000/" + mode + "/" + emoji;
 
         VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, url, new Response.Listener<NetworkResponse>() {
             @Override
@@ -468,6 +473,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
                 error.printStackTrace();
             }
         }) {
@@ -487,7 +493,56 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         };
 
         VolleySingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
+    }
 
+    private CharSequence[] labels = {"Happy", "Sad"};
+    private int selectetLabel;
+
+    public void openLabelDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setSingleChoiceItems(labels, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int index) {
+                selectetLabel = index;
+            }
+        });
+        builder.setTitle("Select Label");
+
+        builder.setPositiveButton("OKAY", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent resultIntent = new Intent();
+                switch (selectetLabel) {
+                    case 0:
+                        sendImageToServer("train", "smile");
+                        break;
+                    case 1:
+                        sendImageToServer("train", "sad");
+                        break;
+                    default:
+                        break;
+                }
+                dialogInterface.dismiss();
+                resultIntent.putExtra(RESPONSE_CODE_ARG, ACTION_CONFIRM).putExtra(FILE_PATH_ARG, previewFilePath);
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            }
+        });
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent resultIntent = new Intent();
+                dialogInterface.dismiss();
+            }
+        });
+        labelsDialog = builder.create();
+        labelsDialog.show();
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(labelsDialog.getWindow().getAttributes());
+        layoutParams.width = Utils.convertDipToPixels(this, 350);
+        layoutParams.height = Utils.convertDipToPixels(this, 350);
+        labelsDialog.getWindow().setAttributes(layoutParams);
     }
 
 }
