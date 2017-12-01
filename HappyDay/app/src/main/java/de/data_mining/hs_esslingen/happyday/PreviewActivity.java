@@ -462,7 +462,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
     private void sendImageToServer(String mode, String emoji) {
 
-        String url = "http://martin-linux:5000/" + mode + "/" + emoji;
+        String url = "https://schrolm.de/happyday/" + mode + "/" + emoji;
 
         VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, url, new Response.Listener<NetworkResponse>() {
             @Override
