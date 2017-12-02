@@ -419,9 +419,9 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             } else {
                 Face face = faces.valueAt(0);
                 int x1 = (int) face.getPosition().x;
-                int y1 = (int) face.getPosition().y;
+                int y1 = (int) face.getPosition().y +60;
                 int x2 = (int) face.getWidth();
-                int y2 = (int) face.getHeight();
+                int y2 = (int) face.getHeight() + 30;
                 editedBitmap = Bitmap.createBitmap(bitmap, x1, y1, x2 ,y2);
             }
         } else {
@@ -446,6 +446,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
         Bitmap bitmap = BitmapFactory.decodeStream(ctx.getContentResolver()
                 .openInputStream(uri), null, bmOptions);
         Matrix matrix = new Matrix();
@@ -495,7 +496,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         VolleySingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
     }
 
-    private CharSequence[] labels = {"Happy", "Sad"};
+    private CharSequence[] labels = {"Smile", "Sad", "Sleep", "Kiss", "Neutral", "Angry", "Surprised"};
     private int selectetLabel;
 
     public void openLabelDialog() {
@@ -513,16 +514,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent resultIntent = new Intent();
-                switch (selectetLabel) {
-                    case 0:
-                        sendImageToServer("train", "smile");
-                        break;
-                    case 1:
-                        sendImageToServer("train", "sad");
-                        break;
-                    default:
-                        break;
-                }
+                sendImageToServer("train", labels[selectetLabel].toString().toLowerCase());
                 dialogInterface.dismiss();
                 resultIntent.putExtra(RESPONSE_CODE_ARG, ACTION_CONFIRM).putExtra(FILE_PATH_ARG, previewFilePath);
                 setResult(RESULT_OK, resultIntent);
@@ -541,7 +533,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
         layoutParams.copyFrom(labelsDialog.getWindow().getAttributes());
         layoutParams.width = Utils.convertDipToPixels(this, 350);
-        layoutParams.height = Utils.convertDipToPixels(this, 350);
+        layoutParams.height = Utils.convertDipToPixels(this, 500);
         labelsDialog.getWindow().setAttributes(layoutParams);
     }
 
