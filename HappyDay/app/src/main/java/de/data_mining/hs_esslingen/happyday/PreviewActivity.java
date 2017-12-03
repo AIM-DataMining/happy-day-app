@@ -34,6 +34,7 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -48,6 +49,9 @@ import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.gms.vision.face.Landmark;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -367,9 +371,6 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         } else if (view.getId() == R.id.eval_image) {
             sendImageToServer("test", "");
             deleteMediaFile();
-            resultIntent.putExtra(RESPONSE_CODE_ARG, ACTION_RETAKE);
-            setResult(RESULT_OK, resultIntent);
-            finish();
         } else if (view.getId() == R.id.cancel_media_action) {
             deleteMediaFile();
             resultIntent.putExtra(RESPONSE_CODE_ARG, ACTION_CANCEL);
@@ -463,13 +464,18 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
     private void sendImageToServer(String mode, String emoji) {
 
-        String url = "https://schrolm.de/happyday/" + mode + "/" + emoji;
+        String url = "https://schrolm.de/happyday/" + mode + emoji;
+        //String url = "http://martin-linux:5000/" + mode + emoji;
 
         VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, url, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
-                String resultResponse = new String(response.data);
-                // parse success output
+                try {
+                    JSONObject result = new JSONObject(new String(response.data));
+                    printResults(result);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -492,8 +498,17 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                 return params;
             }
         };
-
+        multipartRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         VolleySingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
+    }
+
+    private void printResults(JSONObject results) throws JSONException {
+        TextView twResults = (TextView) findViewById(R.id.textViewResults);
+        double sadProp = results.getDouble("sad");
+        double smileProp = results.getDouble("smile");
+        twResults.setText("Sad:" + sadProp + "\nSmile:" + smileProp);
     }
 
     private CharSequence[] labels = {"Smile", "Sad", "Sleep", "Kiss", "Neutral", "Angry", "Surprised"};
@@ -514,7 +529,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent resultIntent = new Intent();
-                sendImageToServer("train", labels[selectetLabel].toString().toLowerCase());
+                sendImageToServer("train", "/" + labels[selectetLabel].toString().toLowerCase());
                 dialogInterface.dismiss();
                 resultIntent.putExtra(RESPONSE_CODE_ARG, ACTION_CONFIRM).putExtra(FILE_PATH_ARG, previewFilePath);
                 setResult(RESULT_OK, resultIntent);
