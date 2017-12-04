@@ -535,8 +535,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                 setResult(RESULT_OK, resultIntent);
                 finish();
             }
-        });
-        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent resultIntent = new Intent();
