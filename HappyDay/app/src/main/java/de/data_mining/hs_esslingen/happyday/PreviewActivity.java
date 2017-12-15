@@ -57,8 +57,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /*
  * Created by memfis on 7/6/16.
@@ -506,9 +515,33 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
     private void printResults(JSONObject results) throws JSONException {
         TextView twResults = (TextView) findViewById(R.id.textViewResults);
-        double sadProp = results.getDouble("sad");
-        double smileProp = results.getDouble("smile");
-        twResults.setText("Sad:" + sadProp + "\nSmile:" + smileProp);
+        HashMap<String, Integer> hmapResults = new HashMap<String, Integer>();
+        hmapResults.put("sad", (int) (results.getDouble("sad") * 100) );
+        hmapResults.put("smile", (int) (results.getDouble("smile") * 100));
+        hmapResults.put("neutral", (int) (results.getDouble("neutral") * 100));
+        List list = new LinkedList(hmapResults.entrySet());
+        Collections.sort(list, new Comparator() {
+            @Override
+            public int compare(Object o, Object t1) {
+                return ((Comparable) ((Map.Entry)(t1)).getValue())
+                        .compareTo(((Map.Entry)(o)).getValue());
+            }
+        });
+        HashMap sortetHmapResults = new LinkedHashMap();
+        for (Iterator it = list.iterator(); it.hasNext();){
+            Map.Entry entry = (Map.Entry) it.next();
+            sortetHmapResults.put(entry.getKey(), entry.getValue());
+        }
+        Set set = sortetHmapResults.entrySet();
+        int i = 0;
+        StringBuilder resultString = new StringBuilder();
+        Iterator iterator = set.iterator();
+        while (iterator.hasNext() && i < 2) {
+            Map.Entry me = (Map.Entry)iterator.next();
+            resultString.append(me.getKey() + ": " + me.getValue() + " %\n");
+            i++;
+        }
+        twResults.setText(resultString.toString());
     }
 
     private CharSequence[] labels = {"Smile", "Sad", "Sleep", "Kiss", "Neutral", "Angry", "Surprised"};
