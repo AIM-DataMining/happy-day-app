@@ -74,6 +74,7 @@ public class CameraFragmentMainActivity extends AppCompatActivity {
         setContentView(R.layout.camerafragment_activity_main);
         ButterKnife.bind(this);
         storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        onAddCameraClicked();
     }
 
     @OnClick(R.id.flash_switch_view)
@@ -322,6 +323,9 @@ public class CameraFragmentMainActivity extends AppCompatActivity {
     }
 
     private CameraFragmentApi getCameraFragment() {
-        return (CameraFragmentApi) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+        CameraFragmentApi camera = (CameraFragmentApi) getSupportFragmentManager()
+                .findFragmentByTag(FRAGMENT_TAG);
+        camera.toggleShutterSound(false);
+        return camera;
     }
 }

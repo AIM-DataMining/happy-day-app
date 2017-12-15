@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TableRow>
+
+        <TextView
+            android:id="@+id/titleNet1"
+            android:layout_column="1"
+            android:background="@drawable/cell_shape"
+            android:padding="1dip"
+            android:text="Net1" />
+        <TextView
+            android:id="@+id/titleNet2"
+            android:layout_column="2"
+            android:text="Net2"
+            android:padding="1dip"
+            android:background="@drawable/cell_shape"/>
+        <TextView
+            android:id="@+id/titleNet3"
+            android:text="Net3"
+            android:padding="1dip"
+            android:background="@drawable/cell_shape"/>
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:text="Smile"
+            android:padding="1dip"
+            android:background="@drawable/cell_shape"/>
+        <TextView
+            android:id="@+id/smileValueNet1"
+            android:text="10%"
+            android:padding="1dip"
+            android:background="@drawable/cell_shape" />
+        <TextView
+            android:id="@+id/smileValueNet2"
+            android:text="10%"
+            android:padding="1dip"
+            android:background="@drawable/cell_shape" />
+        <TextView
+            android:id="@+id/smileValueNet3"
+            android:text="10%"
+            android:padding="1dip"
+            android:background="@drawable/cell_shape" />
+
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:text="Sad"
+            android:padding="1dip"
+            android:background="@drawable/cell_shape"/>
+        <TextView
+            android:id="@+id/sadValueNet1"
+            android:text="10%"
+            android:padding="1dip"
+            android:background="@drawable/cell_shape" />
+        <TextView
+            android:id="@+id/sadValueNet2"
+            android:text="10%"
+            android:padding="1dip"
+            android:background="@drawable/cell_shape" />
+        <TextView
+            android:id="@+id/sadValueNet3"
+            android:text="10%"
+            android:padding="1dip"
+            android:background="@drawable/cell_shape" />
+
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:text="Neutral"
+            android:padding="1dip"
+            android:background="@drawable/cell_shape"/>
+        <TextView
+            android:id="@+id/neutralValueNet1"
+            android:text="10%"
+            android:padding="1dip"
+            android:background="@drawable/cell_shape" />
+        <TextView
+            android:id="@+id/neutralValueNet2"
+            android:text="10%"
+            android:padding="1dip"
+            android:background="@drawable/cell_shape" />
+        <TextView
+            android:id="@+id/neutralValueNet3"
+            android:text="10%"
+            android:padding="1dip"
+            android:background="@drawable/cell_shape" />
+    </TableRow>
+
+</TableLayout>
