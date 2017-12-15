@@ -50,6 +50,7 @@ import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.gms.vision.face.Landmark;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -480,8 +481,9 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onResponse(NetworkResponse response) {
                 try {
-                    JSONObject result = new JSONObject(new String(response.data));
-                    printResults(result);
+                    //JSONObject result = new JSONObject(new String(response.data));
+                    JSONArray resultArray = new JSONArray(new String(response.data));
+                    printResults(resultArray);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -513,9 +515,37 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         VolleySingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
     }
 
-    private void printResults(JSONObject results) throws JSONException {
-        TextView twResults = (TextView) findViewById(R.id.textViewResults);
+    private void printResults(JSONArray results) throws JSONException {
+        //TextView twResults = (TextView) findViewById(R.id.textViewResults);
+        TextView[][] twResults = new TextView[][] {{(TextView) findViewById(R.id.titleNet1),
+                                                    (TextView) findViewById(R.id.smileValueNet1),
+                                                    (TextView) findViewById(R.id.sadValueNet1),
+                                                    (TextView) findViewById(R.id.neutralValueNet1)},
+                                                   {(TextView) findViewById(R.id.titleNet2),
+                                                    (TextView) findViewById(R.id.smileValueNet2),
+                                                    (TextView) findViewById(R.id.sadValueNet2),
+                                                    (TextView) findViewById(R.id.neutralValueNet2)},
+                                                   {(TextView) findViewById(R.id.titleNet3),
+                                                    (TextView) findViewById(R.id.smileValueNet3),
+                                                    (TextView) findViewById(R.id.sadValueNet3),
+                                                    (TextView) findViewById(R.id.neutralValueNet3)}};
         HashMap<String, Integer> hmapResults = new HashMap<String, Integer>();
+        for (int i = 0; i < results.length(); i++) {
+            if (i > 2) break;
+            ((TextView) findViewById(R.id.smileLabel)).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.sadLabel)).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.neutralLabel)).setVisibility(View.VISIBLE);
+            JSONObject result = results.getJSONObject(i);
+            twResults[i][0].setText(result.getString("model"));
+            twResults[i][0].setVisibility(View.VISIBLE);
+            twResults[i][1].setText(""+(int) (result.getDouble("smile") * 100));
+            twResults[i][1].setVisibility(View.VISIBLE);
+            twResults[i][2].setText(""+(int) (result.getDouble("sad") * 100));
+            twResults[i][2].setVisibility(View.VISIBLE);
+            twResults[i][3].setText(""+(int) (result.getDouble("neutral") * 100));
+            twResults[i][3].setVisibility(View.VISIBLE);
+        }
+        /*
         hmapResults.put("sad", (int) (results.getDouble("sad") * 100) );
         hmapResults.put("smile", (int) (results.getDouble("smile") * 100));
         hmapResults.put("neutral", (int) (results.getDouble("neutral") * 100));
@@ -542,6 +572,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             i++;
         }
         twResults.setText(resultString.toString());
+        */
     }
 
     private CharSequence[] labels = {"Smile", "Sad", "Sleep", "Kiss", "Neutral", "Angry", "Surprised"};

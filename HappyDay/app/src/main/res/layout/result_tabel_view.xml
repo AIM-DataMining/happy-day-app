@@ -12,85 +12,91 @@
             android:layout_column="1"
             android:background="@drawable/cell_shape"
             android:padding="1dip"
-            android:text="Net1" />
+            android:visibility="invisible"/>
         <TextView
             android:id="@+id/titleNet2"
             android:layout_column="2"
-            android:text="Net2"
             android:padding="1dip"
-            android:background="@drawable/cell_shape"/>
+            android:background="@drawable/cell_shape"
+            android:visibility="invisible"/>
         <TextView
             android:id="@+id/titleNet3"
-            android:text="Net3"
             android:padding="1dip"
-            android:background="@drawable/cell_shape"/>
+            android:background="@drawable/cell_shape"
+            android:visibility="invisible"/>
     </TableRow>
     <TableRow>
         <TextView
+            android:id="@+id/smileLabel"
             android:text="Smile"
             android:padding="1dip"
-            android:background="@drawable/cell_shape"/>
+            android:background="@drawable/cell_shape"
+            android:visibility="invisible"/>
         <TextView
             android:id="@+id/smileValueNet1"
-            android:text="10%"
             android:padding="1dip"
-            android:background="@drawable/cell_shape" />
+            android:background="@drawable/cell_shape"
+            android:visibility="invisible"/>
         <TextView
             android:id="@+id/smileValueNet2"
-            android:text="10%"
             android:padding="1dip"
-            android:background="@drawable/cell_shape" />
+            android:background="@drawable/cell_shape"
+            android:visibility="invisible"/>
         <TextView
             android:id="@+id/smileValueNet3"
-            android:text="10%"
             android:padding="1dip"
-            android:background="@drawable/cell_shape" />
+            android:background="@drawable/cell_shape"
+            android:visibility="invisible"/>
 
     </TableRow>
 
     <TableRow>
         <TextView
+            android:id="@+id/sadLabel"
             android:text="Sad"
             android:padding="1dip"
-            android:background="@drawable/cell_shape"/>
+            android:background="@drawable/cell_shape"
+            android:visibility="invisible"/>
         <TextView
             android:id="@+id/sadValueNet1"
-            android:text="10%"
             android:padding="1dip"
-            android:background="@drawable/cell_shape" />
+            android:background="@drawable/cell_shape"
+            android:visibility="invisible"/>
         <TextView
             android:id="@+id/sadValueNet2"
-            android:text="10%"
             android:padding="1dip"
-            android:background="@drawable/cell_shape" />
+            android:background="@drawable/cell_shape"
+            android:visibility="invisible"/>
         <TextView
             android:id="@+id/sadValueNet3"
-            android:text="10%"
             android:padding="1dip"
-            android:background="@drawable/cell_shape" />
+            android:background="@drawable/cell_shape"
+            android:visibility="invisible"/>
 
     </TableRow>
 
     <TableRow>
         <TextView
+            android:id="@+id/neutralLabel"
             android:text="Neutral"
             android:padding="1dip"
-            android:background="@drawable/cell_shape"/>
+            android:background="@drawable/cell_shape"
+            android:visibility="invisible"/>
         <TextView
             android:id="@+id/neutralValueNet1"
-            android:text="10%"
             android:padding="1dip"
-            android:background="@drawable/cell_shape" />
+            android:background="@drawable/cell_shape"
+            android:visibility="invisible"/>
         <TextView
             android:id="@+id/neutralValueNet2"
-            android:text="10%"
             android:padding="1dip"
-            android:background="@drawable/cell_shape" />
+            android:background="@drawable/cell_shape"
+            android:visibility="invisible"/>
         <TextView
             android:id="@+id/neutralValueNet3"
-            android:text="10%"
             android:padding="1dip"
-            android:background="@drawable/cell_shape" />
+            android:background="@drawable/cell_shape"
+            android:visibility="invisible"/>
     </TableRow>
 
 </TableLayout>
